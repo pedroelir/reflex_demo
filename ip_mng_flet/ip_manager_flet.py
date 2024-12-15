@@ -6,19 +6,28 @@ def main(page: ft.Page):
 
     # Card for 192.168.1.1
     def create_device_card(ip_address, status, uptime, load, last_updated, firewall_enabled):
-        return ft.ExpansionPanel(
-            header=ft.Text(ip_address, style=ft.TextThemeStyle.HEADLINE_MEDIUM),
-            content=ft.Container(
-                content=ft.Column(
+        return ft.ExpansionTile(
+            title=ft.Text(ip_address, style=ft.TextThemeStyle.HEADLINE_MEDIUM),
+            controls=
                     [
+                        # ft.Row([
+                        #     ft.Text(ip_address, weight="bold", size=18),
+                        # ]),
                         ft.Row([
-                            ft.Text(ip_address, weight="bold", size=18),
+                            ft.Text(f"Status: {status}", color="green" if status == "Online" else "red"),
                         ]),
-                        ft.Text(f"Status: {status}", color="green" if status == "Online" else "red"),
-                        ft.Text(f"Uptime: {uptime}"),
-                        ft.Text(f"Load: {load}"),
-                        ft.Text(f"Last Updated: {last_updated}"),
-                        ft.Text(f"Firewall Enabled: {firewall_enabled}"),
+                        ft.Row([
+                            ft.Text(f"Uptime: {uptime}"),
+                        ]),
+                        ft.Row([
+                            ft.Text(f"Load: {load}"),
+                        ]),
+                        ft.Row([
+                            ft.Text(f"Last Updated: {last_updated}"),
+                        ]),
+                        ft.Row([
+                            ft.Text(f"Firewall Enabled: {firewall_enabled}"),
+                        ]),
                         ft.Row(
                             [
                                 ft.ElevatedButton("Ping", icon=ft.icons.POWER),
@@ -27,10 +36,6 @@ def main(page: ft.Page):
                             ]
                         ),
                     ],
-                    spacing=10,
-                ),
-                padding=20,
-            ),
             # margin=10,
         )
 
@@ -68,18 +73,20 @@ def main(page: ft.Page):
         border_radius=5,
     )
 
-    # Devices List
-    devices_list = ft.ExpansionPanelList([
-        create_device_card("192.168.1.1", "Online", "7 days, 3 hours", "0.75", "2023-05-01 14:30:00", "Yes"),
-        create_device_card("10.0.0.1", "Online", "3 days, 5 hours", "0.65", "2023-05-01 14:30:00", "Yes"),
-        create_device_card("172.16.0.1", "Offline", "0 days, 0 hours", "N/A", "2023-05-01 14:30:00", "No"),
-    ])
+    # # Devices List
+    # devices_list = ft.ExpansionPanelList([
+    #     create_device_card("192.168.1.1", "Online", "7 days, 3 hours", "0.75", "2023-05-01 14:30:00", "Yes"),
+    #     create_device_card("10.0.0.1", "Online", "3 days, 5 hours", "0.65", "2023-05-01 14:30:00", "Yes"),
+    #     create_device_card("172.16.0.1", "Offline", "0 days, 0 hours", "N/A", "2023-05-01 14:30:00", "No"),
+    # ])
 
     # Layout
     page.add(
         ft.Row([
             ft.Column([
-                devices_list
+                create_device_card("192.168.1.1", "Online", "7 days, 3 hours", "0.75", "2023-05-01 14:30:00", "Yes"),
+                create_device_card("10.0.0.1", "Online", "3 days, 5 hours", "0.65", "2023-05-01 14:30:00", "Yes"),
+                create_device_card("172.16.0.1", "Offline", "0 days, 0 hours", "N/A", "2023-05-01 14:30:00", "No"),
             ], expand=True),
             action_results
         ])
