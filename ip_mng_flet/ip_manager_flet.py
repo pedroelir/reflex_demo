@@ -8,6 +8,21 @@ def main(page: ft.Page):
     def mock_ping():
         return random.choice([True, False])
 
+    action_results_content = ft.Column([], spacing=10)
+
+    def log_action_result(ip_address, action, result):
+        action_results_content.controls.append(
+            ft.Container(
+                ft.Column([
+                    ft.Text(f"{action} Result ({ip_address})"),
+                    ft.Text(result),
+                ]),
+                padding=10,
+                border_radius=5,
+            )
+        )
+        action_results_content.update()
+
     def create_device_card(ip_address, status, uptime, load, last_updated, firewall_enabled):
         status_text = ft.Text(f"Status: {status}", color="green" if status == "Online" else "red")
 
@@ -15,10 +30,13 @@ def main(page: ft.Page):
             if mock_ping():
                 status_text.value = "Status: Online"
                 status_text.color = "green"
+                result = "Ping successful"
             else:
                 status_text.value = "Status: Offline"
                 status_text.color = "red"
+                result = "Ping failed"
             status_text.update()
+            log_action_result(ip_address, "Ping", result)
 
         return ft.ExpansionTile(
             title=ft.Text(ip_address, style=ft.TextThemeStyle.HEADLINE_MEDIUM),
@@ -39,28 +57,8 @@ def main(page: ft.Page):
     action_results = ft.Container(
         content=ft.Column([
             ft.Text("Action Results", weight="bold", size=16),
-            ft.Container(
-                ft.Column([
-                    ft.Text("Ping Result (192.168.1.1)"),
-                    ft.Text("4 packets transmitted, 4 received, 0% packet loss"),
-                    ft.Text("Round-trip min/avg/max = 1.2/2.3/3.4 ms"),
-                ]),
-                padding=10,
-                border_radius=5,
-            ),
-            ft.Container(
-                ft.Column([
-                    ft.Text("Trace Route (192.168.1.1)"),
-                    ft.Text("1. 192.168.1.1 (1.2 ms)"),
-                    ft.Text("2. 10.0.0.1 (5.6 ms)"),
-                    ft.Text("3. 172.16.0.1 (10.3 ms)"),
-                ]),
-                padding=10,
-                border_radius=5,
-            ),
-        ],
-            spacing=10,
-        ),
+            action_results_content,
+        ], spacing=10),
         padding=20,
         margin=20,
         border_radius=5,
